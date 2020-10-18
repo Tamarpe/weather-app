@@ -14,12 +14,12 @@ Few clouds, 12 degrees celcius
 
 ## Getting started
 
-Install composer dependencies
+Install composer dependencies:
 ```
 composer install
 ```
 
-add the Open Weather API key in the .env file in the project root directory.
+Add the Open Weather API key in the .env file in the project root directory.
 
 Set an alias:
 ```

@@ -1,11 +1,11 @@
 {
     "name": "tamarpe/weather-app",
-    "description": "A CLI tool to get the weather for a given location.",
+    "description": "A CLI tool to get the current weather for a given city.",
     "type": "project",
     "license": "MIT",
     "minimum-stability": "dev",
     "require": {
-        "php": ">=7.3",
+        "php": ">=7.4",
         "ext-json": "*",
         "guzzlehttp/guzzle": "^7.1@dev",
         "vlucas/phpdotenv": "^5.2@dev"

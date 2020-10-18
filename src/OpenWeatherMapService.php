@@ -18,7 +18,7 @@ class OpenWeatherMapService
     /**
      * The API key.
      */
-    protected string $apiKey;
+    protected ?string $apiKey;
 
     /**
      * The query to fetch the weather information for.
@@ -27,12 +27,14 @@ class OpenWeatherMapService
 
     /**
      * OpenWeatherMapService constructor.
+     *
+     * @throws \InvalidArgumentException if the stream is not a stream resource
      */
     public function __construct()
     {
         $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
         $dotenv->load();
-        if (empty($_ENV['OPEN_WEATHER_MAP_KEY'])) {
+        if (!$this->isNotEmpty($_ENV['OPEN_WEATHER_MAP_KEY'])) {
             throw new \InvalidArgumentException("an API key is missing.");
         }
         $this->apiKey = $_ENV['OPEN_WEATHER_MAP_KEY'];
@@ -51,9 +53,8 @@ class OpenWeatherMapService
     }
 
     /**
-     * Executes an API request and returns the weather information.
-     * Returns FALSE on failure.
-     *
+     * Executes an API request and returns the weather information,
+     * or an error message on failure.
      */
     public function getWeather(): string
     {
@@ -63,14 +64,13 @@ class OpenWeatherMapService
             'units' => 'metric',
         ];
         $client = new Client();
-        $errorMsg = 'An error occurred, try again.';
+        $errorMsg = '';
 
         try {
             $response = $client->get(self::API_BASE_URL . '/weather', ['query' => $query]);
-
-            return $this->parseResponse($response, $response->getStatusCode());
+            return $this->parseResponse($response);
         } catch (ConnectException $e) {
-            $errorMsg = 'An connection error occurred.';
+            return 'An connection error occurred.';
         } catch (ClientException  $e) {
             if ($e->hasResponse()) {
                 if ($data = json_decode((string)$e->getResponse()->getBody())) {
@@ -79,12 +79,13 @@ class OpenWeatherMapService
                 }
             }
         }
+        $errorMsg ??= 'An error occurred, try again.';
 
         return $errorMsg;
     }
 
     /**
-     * Parses and returns an OpenWeather current weather API response.
+     * Parses the API response and returns the current weather.
      *
      * @param ResponseInterface $response OpenWeather API response JSON.
      */
@@ -93,14 +94,24 @@ class OpenWeatherMapService
         $result = [];
         if ($response->getBody()) {
             $data = json_decode((string)$response->getBody());
-            if (!empty($data->weather[0]->description)) {
+            if ($this->isNotEmpty($data->weather[0]->description)) {
                 $result[] = ucfirst($data->weather[0]->description);
             }
-            if (!empty($data->main->temp)) {
+            if ($this->isNotEmpty($data->main->temp)) {
                 $result[] = round($data->main->temp) . ' degrees celcius';
             }
 
             return implode(', ', $result);
         }
+    }
+
+    /**
+     * Check if a given variable is defined and not empty.
+     *
+     * @param mixed $variable the given variable.
+     */
+    public function isNotEmpty(&$variable): bool
+    {
+        return isset($variable) && $variable !== '';
     }
 }

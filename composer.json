@@ -1,0 +1,27 @@
+{
+    "name": "tamarpe/weather-app",
+    "description": "A CLI tool to get the weather for a given location.",
+    "type": "project",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.3",
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^7.1@dev",
+        "vlucas/phpdotenv": "^5.2@dev"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9"
+    },
+    "authors": [
+        {
+            "name": "Tamar Peled",
+            "email": "tamarpe@gmail.com"
+        }
+    ]
+}

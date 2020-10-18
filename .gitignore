@@ -1,0 +1,9 @@
+# Ignore IDE files
+/.idea
+*.iml
+
+# Managed by Composer
+/vendor
+
+# Ignore the environment file that may contain sensitive information
+.env

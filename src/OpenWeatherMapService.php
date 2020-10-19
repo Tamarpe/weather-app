@@ -16,7 +16,7 @@ class OpenWeatherMapService
     const API_BASE_URL = 'api.openweathermap.org/data/2.5';
 
     /**
-     * The API key.
+     * The OpenWeatherMap API key.
      */
     protected ?string $apiKey;
 
@@ -28,14 +28,14 @@ class OpenWeatherMapService
     /**
      * OpenWeatherMapService constructor.
      *
-     * @throws \InvalidArgumentException if the stream is not a stream resource
+     * @throws \InvalidArgumentException if the API key is missing.
      */
     public function __construct()
     {
         $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
         $dotenv->load();
         if (!$this->isNotEmpty($_ENV['OPEN_WEATHER_MAP_KEY'])) {
-            throw new \InvalidArgumentException("an API key is missing.");
+            throw new \InvalidArgumentException('an API key is missing.');
         }
         $this->apiKey = $_ENV['OPEN_WEATHER_MAP_KEY'];
     }
@@ -53,7 +53,7 @@ class OpenWeatherMapService
     }
 
     /**
-     * Executes an API request and returns the weather information,
+     * Executes an API request and returns the weather information
      * or an error message on failure.
      */
     public function getWeather(): string
